@@ -3,406 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Libretto Dinamico - Lorenzo Segale</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>Libretto Lorenzo Segale - Ingegneria Fisica</title>
     <style>
-        :root {
-            --primary-color: #800000;
-            --background-color: #f4f7f6;
-            --card-background: #ffffff;
-            --text-color: #333;
-            --light-text-color: #777;
-            --border-color: #e0e0e0;
-            --accent-green: #28a745;
-            --accent-orange: #ffc107;
-        }
-
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--background-color);
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            color: #333;
             margin: 0;
-            color: var(--text-color);
+            padding: 0;
         }
-
+        .header {
+            background-color: #b22222;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 5px solid #800000;
+        }
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 1000px;
+            margin: 20px auto;
             padding: 20px;
         }
-
-        /* --- Header --- */
-        .header {
-            background-color: var(--primary-color);
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #b22222;
             color: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        .header h1 {
-            margin: 0;
-            font-size: 1.8em;
-            font-weight: 500;
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
-        
-        .student-info { text-align: right; }
-        .student-info p { margin: 0; font-weight: 300; }
-
-        /* --- Viste Principali (Libretto / Dettaglio) --- */
-        #libretto-view, #detail-view {
-            transition: opacity 0.3s ease-in-out;
-        }
-        
-        /* --- Riepilogo --- */
-        .summary-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-        .summary-card {
-            background-color: var(--card-background);
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            text-align: center;
-            border-left: 5px solid var(--primary-color);
-        }
-        .summary-card h3 { margin-top: 0; color: var(--light-text-color); font-weight: 400; }
-        .summary-card .value { font-size: 2.5em; font-weight: 700; color: var(--primary-color); }
-        
-        /* --- Tabella Libretto Principale --- */
-        .card {
-            background-color: var(--card-background);
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            overflow-x: auto;
-        }
-        .card h2 {
-            padding: 20px; margin: 0;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--primary-color);
-        }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--border-color); }
-        thead { background-color: #f9f9f9; }
-        th { font-weight: 500; color: var(--light-text-color); font-size: 0.9em; text-transform: uppercase; }
-        
-        .status-circle {
-            width: 12px; height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-        }
-        .status-passed { background-color: var(--accent-green); }
-        .status-pending { background-color: var(--accent-orange); }
-
-        .course-link {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
+        .subject-row {
             cursor: pointer;
         }
-        .course-link:hover { text-decoration: underline; }
-
-        /* --- Vista Dettaglio Materia --- */
-        #detail-view { display: none; }
-        .detail-header {
-            margin-bottom: 20px;
+        .subject-row:hover {
+            background-color: #ffe6e6;
         }
-        .detail-header h2 { font-size: 1.5em; margin: 0; }
-        .detail-header h3 { font-size: 1.2em; color: var(--light-text-color); margin: 5px 0 0; font-weight: 400; }
-        
         .back-button {
-            background-color: var(--primary-color);
+            background-color: #b22222;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 5px 10px;
+            margin-top: 10px;
             cursor: pointer;
-            font-size: 1em;
-            margin-bottom: 20px;
-            transition: background-color 0.2s;
         }
-        .back-button:hover { background-color: #a00000; }
-        
-        .info-table td:first-child { font-weight: 500; width: 30%; }
-        
-        .hidden { display: none !important; }
-
+        .back-button:hover {
+            background-color: #800000;
+        }
     </style>
 </head>
 <body>
-
-    <header class="header">
-        <h1>Libretto Elettronico</h1>
-        <div class="student-info">
-            <p><strong>Studente:</strong> Lorenzo Segale</p>
-            <p><strong>Matricola:</strong> 906023 | <strong>Corso:</strong> Ingegneria Fisica</p>
-        </div>
-    </header>
-
-    <div class="container">
-        <!-- VISTA RIASSUNTIVA LIBRETTO (VISIBILE DI DEFAULT) -->
-        <div id="libretto-view">
-            <section class="summary-section">
-                <div class="summary-card">
-                    <h3>Media Ponderata</h3>
-                    <p class="value" id="media-ponderata">-- / 30</p>
-                </div>
-                <div class="summary-card">
-                    <h3>CFU Acquisiti</h3>
-                    <p class="value" id="cfu-totali">-- / 60</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Voto di Laurea (Stima)</h3>
-                    <p class="value" id="voto-laurea">-- / 110</p>
-                </div>
-            </section>
-
-            <section class="card">
-                <h2>Dettaglio Carriera - Anno 1</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Attività Didattica</th>
-                            <th>CFU</th>
-                            <th>Stato</th>
-                            <th>Voto - Data Esame</th>
-                        </tr>
-                    </thead>
-                    <tbody id="libretto-table-body">
-                        <!-- Righe generate da JavaScript -->
-                    </tbody>
-                </table>
-            </section>
-        </div>
-
-        <!-- VISTA DETTAGLIO MATERIA (NASCOSTA DI DEFAULT) -->
-        <div id="detail-view">
-            <button class="back-button" id="back-to-libretto">&larr; Torna al Libretto</button>
-            <div id="course-details-content">
-                <!-- Contenuto del dettaglio materia generato da JavaScript -->
-            </div>
-        </div>
+    <div class="header">
+        <h1>Libretto - Attività Didattica</h1>
+        <h2>Dettaglio della Carriera di: LORENZO SEGALE - [MAT. 906023]</h2>
+    </div>
+    <div class="container" id="mainContent">
+        <table id="subjectTable">
+            <tr>
+                <th>Attività Didattica</th>
+                <th>Tipo Attività</th>
+                <th>Tipo Formaz.</th>
+                <th>Settore</th>
+                <th>CFU</th>
+                <th>Durata</th>
+            </tr>
+            <tr class="subject-row" onclick="showDetail('ANALISI MATEMATICA I [CT0561]', 'LEZ', 'A - Base', 'MAT/05', 9, 72, 'Superato', '27', 1, 'Scritto', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                <td>ANALISI MATEMATICA I [CT0561]</td>
+                <td>LEZ</td>
+                <td>A - Base</td>
+                <td>MAT/05</td>
+                <td>9</td>
+                <td>72</td>
+            </tr>
+            <tr class="subject-row" onclick="showDetail('ANALISI MATEMATICA II [CT0561]', 'LEZ', 'A - Base', 'MAT/05', 9, 72, 'Superato', '25', 1, 'Scritto', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                <td>ANALISI MATEMATICA II [CT0561]</td>
+                <td>LEZ</td>
+                <td>A - Base</td>
+                <td>MAT/05</td>
+                <td>9</td>
+                <td>72</td>
+            </tr>
+            <tr class="subject-row" onclick="showDetail('ALGEBRA LINEARE [CT0562]', 'LEZ', 'A - Base', 'MAT/02', 6, 48, 'Superato', '28', 1, 'Scritto', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                <td>ALGEBRA LINEARE [CT0562]</td>
+                <td>LEZ</td>
+                <td>A - Base</td>
+                <td>MAT/02</td>
+                <td>6</td>
+                <td>48</td>
+            </tr>
+            <tr class="subject-row" onclick="showDetail('FISICA I [CT0564]', 'LEZ', 'A - Base', 'FIS/01', 9, 72, 'Superato', '26', 1, 'Orale', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                <td>FISICA I [CT0564]</td>
+                <td>LEZ</td>
+                <td>A - Base</td>
+                <td>FIS/01</td>
+                <td>9</td>
+                <td>72</td>
+            </tr>
+            <tr class="subject-row" onclick="showDetail('FONDAMENTI DI CHIMICA [CT0568]', 'LEZ', 'A - Base', 'CHIM/07', 6, 48, 'Superato', '24', 1, 'Scritto', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                <td>FONDAMENTI DI CHIMICA [CT0568]</td>
+                <td>LEZ</td>
+                <td>A - Base</td>
+                <td>CHIM/07</td>
+                <td>6</td>
+                <td>48</td>
+            </tr>
+            <tr class="subject-row" onclick="showDetail('INFORMATICA [CT0569]', 'LEZ', 'A - Base', 'ING-INF/05', 6, 48, 'Superato', '27', 1, 'Scritto', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                <td>INFORMATICA [CT0569]</td>
+                <td>LEZ</td>
+                <td>A - Base</td>
+                <td>ING-INF/05</td>
+                <td>6</td>
+                <td>48</td>
+            </tr>
+            <tr class="subject-row" onclick="showDetail('LINGUA INGLESE B1 [CLA-B1]', 'LEZ', 'A - Base', '', 0, 0, 'Superato', 'ES', 1, '', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                <td>LINGUA INGLESE B1 [CLA-B1]</td>
+                <td>LEZ</td>
+                <td>A - Base</td>
+                <td></td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr class="subject-row" onclick="showDetail('LINGUA INGLESE B2 [CLA-B2]', 'LEZ', 'A - Base', '', 3, 0, 'Superato', 'ES', 1, '', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                <td>LINGUA INGLESE B2 [CLA-B2]</td>
+                <td>LEZ</td>
+                <td>A - Base</td>
+                <td></td>
+                <td>3</td>
+                <td>0</td>
+            </tr>
+            <tr class="subject-row" onclick="showDetail('SICUREZZA E SALUTE NELLE ATTIVITÀ DIDATTICHE E DI RICERCA [SIC001]', 'LEZ', 'A - Base', '', 1, 0, 'Superato', 'ES', 1, '', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                <td>SICUREZZA E SALUTE NELLE ATTIVITÀ DIDATTICHE E DI RICERCA [SIC001]</td>
+                <td>LEZ</td>
+                <td>A - Base</td>
+                <td></td>
+                <td>1</td>
+                <td>0</td>
+            </tr>
+            <tr class="subject-row" onclick="showDetail('STATISTICA [CT0563]', 'LEZ', 'A - Base', 'SECS-S/01', 6, 48, 'Non Superato', '-', 1, '', 'Non Frequentata', 'Attività didattica collegata al piano', 'Anno:')">
+                <td>STATISTICA [CT0563]</td>
+                <td>LEZ</td>
+                <td>A - Base</td>
+                <td>SECS-S/01</td>
+                <td>6</td>
+                <td>48</td>
+            </tr>
+        </table>
     </div>
 
-    <footer>
-        <p style="text-align: center; color: #777; margin-top: 40px;">&copy; 2024 Università Ca' Foscari Venezia - Simulazione Libretto Studente</p>
-    </footer>
-
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        
-        // --- DATABASE DEGLI ESAMI ---
-        // Ho raccolto tutti i dati dalle immagini in un unico posto.
-        const courses = [
-            {
-                id: 'CT0561', name: 'ANALISI MATEMATICA II', cfu: 9, status: 'passed', grade: '26', date: '01/07/2024',
-                details: {
-                    anno: 1, stato: 'Pianificata (Non frequentata)', tipoEsame: 'Orale', tipoValutazione: 'Voto Finale', note: 'Attività didattica collegata al piano', frequenza: 'Anno'
-                },
-                modules: [{ name: 'ANALISI MATEMATICA II - [CT0561]', tipo: 'LEZ', tipoFormaz: 'A - Base', settore: 'MAT/05 - ANALISI MATEMATICA', cfu: 9, durata: 72 }]
-            },
-            {
-                id: 'CT0569', name: 'INFORMATICA I', cfu: 12, status: 'passed', grade: '30L', date: '25/06/2024',
-                details: {
-                    anno: 1, stato: 'Pianificata (Non frequentata)', tipoEsame: 'Scritto', tipoValutazione: 'Voto Finale', note: 'Attività didattica collegata al piano', frequenza: 'Anno'
-                },
-                modules: [
-                    { name: 'INFORMATICA I - MOD. 1 - [CT0569-1]', tipo: 'LEZ', tipoFormaz: 'B - Caratterizzante', settore: 'ING-INF/05 - SISTEMI DI ELABORAZIONE DELLE INFORMAZIONI', cfu: 6, durata: 48 },
-                    { name: 'INFORMATICA I - MOD. 2 - [CT0569-2]', tipo: 'LEZ', tipoFormaz: 'B - Caratterizzante', settore: 'ING-INF/05 - SISTEMI DI ELABORAZIONE DELLE INFORMAZIONI', cfu: 6, durata: 48 }
-                ]
-            },
-            {
-                id: 'CT0562', name: 'ALGEBRA LINEARE', cfu: 6, status: 'passed', grade: '30', date: '15/07/2024',
-                details: {
-                    anno: 1, stato: 'Pianificata (Non frequentata)', tipoEsame: 'Scritto', tipoValutazione: 'Voto Finale', note: 'Attività didattica collegata al piano', frequenza: 'Anno'
-                },
-                modules: [{ name: 'ALGEBRA LINEARE - [CT0562]', tipo: 'LEZ', tipoFormaz: 'A - Base', settore: 'MAT/02 - ALGEBRA', cfu: 6, durata: 48 }]
-            },
-            {
-                id: 'CT0563', name: 'STATISTICA', cfu: 6, status: 'pending', grade: null, date: null,
-                details: {
-                    anno: 1, stato: 'Pianificata (Non frequentata)', tipoEsame: 'Orale', tipoValutazione: 'Voto Finale', note: 'Attività didattica collegata al piano', frequenza: 'Anno'
-                },
-                modules: [{ name: 'STATISTICA - [CT0563]', tipo: 'LEZ', tipoFormaz: 'A - Base', settore: 'SECS-S/01 - STATISTICA', cfu: 6, durata: 48 }]
-            },
-             {
-                id: 'CT0560', name: 'ANALISI MATEMATICA I', cfu: 9, status: 'passed', grade: '28', date: '10/02/2024',
-                details: {
-                    anno: 1, stato: 'Pianificata (Non frequentata)', tipoEsame: 'Scritto', tipoValutazione: 'Voto Finale', note: 'Attività didattica collegata al piano', frequenza: 'Anno'
-                },
-                modules: [{ name: 'ANALISI MATEMATICA I - [CT0560]', tipo: 'LEZ', tipoFormaz: 'A - Base', settore: 'MAT/05 - ANALISI MATEMATICA', cfu: 9, durata: 72 }]
-            },
-            {
-                id: 'CT0564', name: 'FISICA I', cfu: 9, status: 'passed', grade: '29', date: '20/07/2024',
-                details: {
-                    anno: 1, stato: 'Pianificata (Non frequentata)', tipoEsame: 'Orale', tipoValutazione: 'Voto Finale', note: 'Attività didattica collegata al piano', frequenza: 'Anno'
-                },
-                modules: [{ name: 'FISICA I - [CT0564]', tipo: 'LEZ', tipoFormaz: 'A - Base', settore: 'FIS/01 - FISICA SPERIMENTALE', cfu: 9, durata: 72 }]
-            },
-            {
-                id: 'CT0568', name: 'FONDAMENTI DI CHIMICA', cfu: 6, status: 'passed', grade: '25', date: '15/06/2024',
-                details: {
-                    anno: 1, stato: 'Pianificata (Non frequentata)', tipoEsame: 'Scritto', tipoValutazione: 'Voto Finale', note: 'Attività didattica collegata al piano', frequenza: 'Anno'
-                },
-                modules: [{ name: 'FONDAMENTI DI CHIMICA - [CT0568]', tipo: 'LEZ', tipoFormaz: 'A - Base', settore: 'CHIM/07 - FONDAMENTI CHIMICI DELLE TECNOLOGIE', cfu: 6, durata: 48 }]
-            },
-            {
-                id: 'CLA-B2', name: 'LINGUA INGLESE B2', cfu: 3, status: 'passed', grade: 'Idoneo', date: '22/08/2024',
-                details: {
-                    anno: 1, stato: 'Superata', tipoEsame: 'Idoneità', tipoValutazione: 'Giudizio', note: '', frequenza: 'Anno'
-                },
-                modules: [{ name: 'LINGUA INGLESE B2', tipo: 'LEZ', tipoFormaz: 'F - Altro', settore: 'N/A', cfu: 3, durata: 0 }]
-            }
-        ];
-
-        // --- ELEMENTI DEL DOM ---
-        const librettoView = document.getElementById('libretto-view');
-        const detailView = document.getElementById('detail-view');
-        const librettoTableBody = document.getElementById('libretto-table-body');
-        const courseDetailsContent = document.getElementById('course-details-content');
-        const backButton = document.getElementById('back-to-libretto');
-        
-        // --- FUNZIONI ---
-
-        // Funzione per renderizzare la tabella principale del libretto
-        function renderLibrettoTable() {
-            librettoTableBody.innerHTML = ''; // Pulisce la tabella
-            courses.sort((a, b) => a.name.localeCompare(b.name)).forEach(course => {
-                const statusClass = course.status === 'passed' ? 'status-passed' : 'status-pending';
-                const gradeDisplay = course.grade ? (course.grade === '30L' ? '30 e Lode' : course.grade) : '-';
-                const dateDisplay = course.date || '-';
-
-                const row = `
-                    <tr>
-                        <td><a href="#" class="course-link" data-course-id="${course.id}">${course.name}</a></td>
-                        <td>${course.cfu}</td>
-                        <td><span class="status-circle ${statusClass}"></span> ${course.status === 'passed' ? (course.grade === 'Idoneo' ? 'Idoneo' : 'Superato') : 'Da Sostenere'}</td>
-                        <td><strong>${gradeDisplay}</strong> - ${dateDisplay}</td>
-                    </tr>
-                `;
-                librettoTableBody.innerHTML += row;
-            });
+        function showDetail(subject, activityType, formationType, sector, cfu, duration, status, grade, year, examType, frequency, evaluation, notes) {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="header">
+                    <h1>Libretto - Attività Didattica</h1>
+                    <h2>Dettaglio della Carriera di: LORENZO SEGALE - [MAT. 906023]</h2>
+                </div>
+                <div class="container">
+                    <h3>Attività Didattica: ${subject}</h3>
+                    <hr style="border: 2px solid #b22222;">
+                    <table>
+                        <tr><td>Anno di Corso</td><td>${year}</td></tr>
+                        <tr><td>Stato</td><td>${status}</td></tr>
+                        <tr><td>Tipo Esame</td><td>${examType}</td></tr>
+                        <tr><td>Tipo Valutazione</td><td>${evaluation}</td></tr>
+                        <tr><td>Note</td><td>${notes}</td></tr>
+                        <tr><td>Frequenza</td><td>${frequency}</td></tr>
+                    </table>
+                    <button class="back-button" onclick="loadMainTable()">Indietro</button>
+                </div>
+            `;
         }
 
-        // Funzione per renderizzare la vista di dettaglio di un corso
-        function renderCourseDetail(courseId) {
-            const course = courses.find(c => c.id === courseId);
-            if (!course) return;
-
-            // Costruisce la tabella dei moduli
-            let modulesHtml = '';
-            course.modules.forEach(mod => {
-                modulesHtml += `
-                    <tr>
-                        <td>${mod.name}</td>
-                        <td>${mod.tipo}</td>
-                        <td>${mod.tipoFormaz}</td>
-                        <td>${mod.settore}</td>
-                        <td>${mod.cfu}</td>
-                        <td>${mod.durata}</td>
-                    </tr>
-                `;
-            });
-
-            // Costruisce l'HTML completo per la vista di dettaglio
-            const detailHtml = `
-                <div class="detail-header">
-                    <h2>${course.name} - [${course.id}]</h2>
-                    <h3>Offerta nel corso di studio: INGEGNERIA FISICA</h3>
+        function loadMainTable() {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="header">
+                    <h1>Libretto - Attività Didattica</h1>
+                    <h2>Dettaglio della Carriera di: LORENZO SEGALE - [MAT. 906023]</h2>
                 </div>
-
-                <div class="card">
-                    <h2>Attività Didattica</h2>
-                    <table class="info-table">
-                        <tbody>
-                            <tr><td>Anno di Corso</td><td>${course.details.anno}</td></tr>
-                            <tr><td>Stato</td><td>${course.details.stato}</td></tr>
-                            <tr><td>Tipo Esame</td><td>${course.details.tipoEsame}</td></tr>
-                            <tr><td>Tipo Valutazione</td><td>${course.details.tipoValutazione}</td></tr>
-                            <tr><td>Note</td><td>${course.details.note}</td></tr>
-                            <tr><td>Frequenza</td><td>${course.details.frequenza}</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="card" style="margin-top: 20px;">
-                    <h2>Unità Didattiche</h2>
-                    <table>
-                        <thead>
-                            <tr><th>Unità Didattica</th><th>Tipo Attività</th><th>Tipo Formaz.</th><th>Settore</th><th>CFU</th><th>Durata</th></tr>
-                        </thead>
-                        <tbody>${modulesHtml}</tbody>
+                <div class="container">
+                    <table id="subjectTable">
+                        <tr>
+                            <th>Attività Didattica</th>
+                            <th>Tipo Attività</th>
+                            <th>Tipo Formaz.</th>
+                            <th>Settore</th>
+                            <th>CFU</th>
+                            <th>Durata</th>
+                        </tr>
+                        <tr class="subject-row" onclick="showDetail('ANALISI MATEMATICA I [CT0561]', 'LEZ', 'A - Base', 'MAT/05', 9, 72, 'Superato', '27', 1, 'Scritto', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                            <td>ANALISI MATEMATICA I [CT0561]</td>
+                            <td>LEZ</td>
+                            <td>A - Base</td>
+                            <td>MAT/05</td>
+                            <td>9</td>
+                            <td>72</td>
+                        </tr>
+                        <tr class="subject-row" onclick="showDetail('ANALISI MATEMATICA II [CT0561]', 'LEZ', 'A - Base', 'MAT/05', 9, 72, 'Superato', '25', 1, 'Scritto', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                            <td>ANALISI MATEMATICA II [CT0561]</td>
+                            <td>LEZ</td>
+                            <td>A - Base</td>
+                            <td>MAT/05</td>
+                            <td>9</td>
+                            <td>72</td>
+                        </tr>
+                        <tr class="subject-row" onclick="showDetail('ALGEBRA LINEARE [CT0562]', 'LEZ', 'A - Base', 'MAT/02', 6, 48, 'Superato', '28', 1, 'Scritto', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                            <td>ALGEBRA LINEARE [CT0562]</td>
+                            <td>LEZ</td>
+                            <td>A - Base</td>
+                            <td>MAT/02</td>
+                            <td>6</td>
+                            <td>48</td>
+                        </tr>
+                        <tr class="subject-row" onclick="showDetail('FISICA I [CT0564]', 'LEZ', 'A - Base', 'FIS/01', 9, 72, 'Superato', '26', 1, 'Orale', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                            <td>FISICA I [CT0564]</td>
+                            <td>LEZ</td>
+                            <td>A - Base</td>
+                            <td>FIS/01</td>
+                            <td>9</td>
+                            <td>72</td>
+                        </tr>
+                        <tr class="subject-row" onclick="showDetail('FONDAMENTI DI CHIMICA [CT0568]', 'LEZ', 'A - Base', 'CHIM/07', 6, 48, 'Superato', '24', 1, 'Scritto', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                            <td>FONDAMENTI DI CHIMICA [CT0568]</td>
+                            <td>LEZ</td>
+                            <td>A - Base</td>
+                            <td>CHIM/07</td>
+                            <td>6</td>
+                            <td>48</td>
+                        </tr>
+                        <tr class="subject-row" onclick="showDetail('INFORMATICA [CT0569]', 'LEZ', 'A - Base', 'ING-INF/05', 6, 48, 'Superato', '27', 1, 'Scritto', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                            <td>INFORMATICA [CT0569]</td>
+                            <td>LEZ</td>
+                            <td>A - Base</td>
+                            <td>ING-INF/05</td>
+                            <td>6</td>
+                            <td>48</td>
+                        </tr>
+                        <tr class="subject-row" onclick="showDetail('LINGUA INGLESE B1 [CLA-B1]', 'LEZ', 'A - Base', '', 0, 0, 'Superato', 'ES', 1, '', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                            <td>LINGUA INGLESE B1 [CLA-B1]</td>
+                            <td>LEZ</td>
+                            <td>A - Base</td>
+                            <td></td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr class="subject-row" onclick="showDetail('LINGUA INGLESE B2 [CLA-B2]', 'LEZ', 'A - Base', '', 3, 0, 'Superato', 'ES', 1, '', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                            <td>LINGUA INGLESE B2 [CLA-B2]</td>
+                            <td>LEZ</td>
+                            <td>A - Base</td>
+                            <td></td>
+                            <td>3</td>
+                            <td>0</td>
+                        </tr>
+                        <tr class="subject-row" onclick="showDetail('SICUREZZA E SALUTE NELLE ATTIVITÀ DIDATTICHE E DI RICERCA [SIC001]', 'LEZ', 'A - Base', '', 1, 0, 'Superato', 'ES', 1, '', 'Non Frequentata', 'Voto Finale', 'Anno:')">
+                            <td>SICUREZZA E SALUTE NELLE ATTIVITÀ DIDATTICHE E DI RICERCA [SIC001]</td>
+                            <td>LEZ</td>
+                            <td>A - Base</td>
+                            <td></td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr class="subject-row" onclick="showDetail('STATISTICA [CT0563]', 'LEZ', 'A - Base', 'SECS-S/01', 6, 48, 'Non Superato', '-', 1, '', 'Non Frequentata', 'Attività didattica collegata al piano', 'Anno:')">
+                            <td>STATISTICA [CT0563]</td>
+                            <td>LEZ</td>
+                            <td>A - Base</td>
+                            <td>SECS-S/01</td>
+                            <td>6</td>
+                            <td>48</td>
+                        </tr>
                     </table>
                 </div>
             `;
-            courseDetailsContent.innerHTML = detailHtml;
         }
 
-        // Funzione per calcolare le statistiche (media, cfu, etc.)
-        function calculateStats() {
-            let totalCFU = 0;
-            let weightedSum = 0;
-            let cfuForAverage = 0;
-
-            courses.forEach(course => {
-                if (course.status === 'passed') {
-                    totalCFU += course.cfu;
-                    if (course.grade && course.grade !== 'Idoneo') {
-                        let grade = course.grade.includes('L') ? 30 : parseInt(course.grade);
-                        weightedSum += grade * course.cfu;
-                        cfuForAverage += course.cfu;
-                    }
-                }
-            });
-
-            const weightedAverage = cfuForAverage > 0 ? (weightedSum / cfuForAverage) : 0;
-            const estimatedGraduationScore = weightedAverage > 0 ? (weightedAverage * 110 / 30) : 0;
-
-            document.getElementById('media-ponderata').textContent = `${weightedAverage.toFixed(2)} / 30`;
-            document.getElementById('cfu-totali').textContent = `${totalCFU} / 60`;
-            document.getElementById('voto-laurea').textContent = `${estimatedGraduationScore.toFixed(2)} / 110`;
-        }
-        
-        // Funzione per gestire il cambio di vista
-        function switchView(showDetail) {
-            if (showDetail) {
-                librettoView.classList.add('hidden');
-                detailView.classList.remove('hidden');
-            } else {
-                detailView.classList.add('hidden');
-                librettoView.classList.remove('hidden');
-            }
-        }
-        
-        // --- EVENT LISTENERS ---
-
-        // Click sui link delle materie
-        librettoTableBody.addEventListener('click', function(e) {
-            if (e.target.classList.contains('course-link')) {
-                e.preventDefault();
-                const courseId = e.target.dataset.courseId;
-                renderCourseDetail(courseId);
-                switchView(true); // Mostra la vista dettaglio
-            }
-        });
-        
-        // Click sul pulsante "Torna al Libretto"
-        backButton.addEventListener('click', function() {
-            switchView(false); // Mostra la vista libretto
-        });
-        
-        // --- INIZIALIZZAZIONE ---
-        renderLibrettoTable();
-        calculateStats();
-
-    });
+        // Load main table on page load
+        window.onload = loadMainTable;
     </script>
 </body>
 </html>
